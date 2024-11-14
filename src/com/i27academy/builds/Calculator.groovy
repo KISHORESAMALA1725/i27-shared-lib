@@ -6,7 +6,7 @@ class Calculator {
         this.jenkins = jenkins
     }
 
-    def add(firstNumber,secondNumber) {
+    def add(firstNumber, secondNumber) {
         return firstNumber + secondNumber
     }
 }
