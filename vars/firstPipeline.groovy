@@ -1,7 +1,7 @@
 import com.i27academy.builds.calculator
 
 def call(Map pipelineParams) {
-    Calculator calculator = new Calculator()
+    calculator calculator = new calculator()
     pipeline {
         agent {
             label 'java-slave'
