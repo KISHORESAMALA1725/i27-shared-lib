@@ -7,6 +7,6 @@ class Calculator {
     }
 
     def add(firstNumber,secondNumber) {
-        return firstnumber + secondnumber
+        return firstNumber + secondNumber
     }
 }
