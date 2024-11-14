@@ -15,7 +15,7 @@ def call(Map pipelineParams) {
                     script {
                         echo "calling calculator method from src folder"
                         echo " * * * * *  PRINTING SUM OF VALUES * * * * * "
-                        println calculator.multiply(2,3)
+                        println calculator.add(2,3)
                     }
                 }
             }
