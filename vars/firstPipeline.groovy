@@ -1,7 +1,7 @@
-import com.i27academy.builds.calculator
+import com.i27academy.builds.Calculator
 
 def call(Map pipelineParams) {
-    Calculator calculator = new calculator(this)
+    Calculator calculator = new Calculator(this)
     pipeline {
         agent {
             label 'java-slave'
@@ -15,7 +15,7 @@ def call(Map pipelineParams) {
                     script {
                         echo "calling calculator method from src folder"
                         echo " * * * * *  PRINTING SUM OF VALUES * * * * * "
-                        println calculator(2,3)
+                        println Calculator(2,3)
                     }
                 }
             }
