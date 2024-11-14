@@ -6,9 +6,9 @@ def call(Map pipelineParams) {
         agent {
             label 'java-slave'
         }
-        environment {
-            APPLICATION_NAME = "${pipelineParams.appName}"
-        }
+        // environment {
+        //     APPLICATION_NAME = "${pipelineParams.appName}"
+        // }
         stages {
             stage ('this is SHARED_LIB_EXAMPLE') {
                 steps {
