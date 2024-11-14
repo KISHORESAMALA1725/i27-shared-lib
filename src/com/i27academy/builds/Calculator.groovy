@@ -10,7 +10,7 @@ class Calculator {
         return firstNumber + secondNumber
     }
 
-    def multiply(firstNumer, secondNumber {
+    def multiply(firstNumer, secondNumber) {
         return firstNumber * secondNumber
-    })
+    }
 }
