@@ -9,4 +9,8 @@ class Calculator {
     def add(firstNumber, secondNumber) {
         return firstNumber + secondNumber
     }
+
+    def multiply(firstNumer, secondNumber {
+        return firstNumber * secondNumber
+    })
 }
