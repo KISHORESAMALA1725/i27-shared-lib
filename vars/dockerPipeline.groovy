@@ -220,6 +220,7 @@ pipeline {
         }
     }
 }
+}
 
 //App Building
 def buildApp(){
@@ -296,4 +297,3 @@ def dockerDeploy(envDeploy, hostPort, contPort){
 // tst: HostPort = 6761
 // stg: HostPort = 7761
 // prod: HostPort = 8761
-}
