@@ -22,7 +22,11 @@ def call (Map pipelineParams) {
     }
     
     environment {
-        APPLICATION_NAME='eureka'
+        APPLICATION_NAME="${pipelineParams.appName}"
+        DEV_HOST_PORT = "${pipelineParams.devHostPort}"
+        TST_HOST_PORT = "${pipelineParams.tstHostPort}"
+        STG_HOST_PORT = "${pipelineParams.stgHostPort}"
+        PORD_HOST_PORT = "${pipelineParams.prodHostPort}"        
         POM_VERSION = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging()
         DOCKER_HUB = "docker.io/kishoresamala84"
