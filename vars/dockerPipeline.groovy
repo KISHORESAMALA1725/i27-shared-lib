@@ -24,9 +24,10 @@ def call (Map pipelineParams) {
     environment {
         APPLICATION_NAME="${pipelineParams.appName}"
         DEV_HOST_PORT = "${pipelineParams.devHostPort}"
-        TST_HOST_PORT = "${pipelineParams.tstHostPort}"
-        STG_HOST_PORT = "${pipelineParams.stgHostPort}"
-        PORD_HOST_PORT = "${pipelineParams.prodHostPort}"        
+        TEST_HOST_PORT = "${pipelineParams.testHostPort}"
+        STAGE_HOST_PORT = "${pipelineParams.stageHostPort}"
+        PROD_HOST_PORT = "${pipelineParams.prodHostPort}"
+        CONT_PORT = "${pipelineParams.contPort}"
         POM_VERSION = readMavenPom().getVersion()
         POM_PACKAGING = readMavenPom().getPackaging()
         DOCKER_HUB = "docker.io/kishoresamala84"
@@ -109,7 +110,7 @@ def call (Map pipelineParams) {
             }
             steps {
                 script{
-                    dockerDeploy('dev','1399','8761').call()
+                    dockerDeploy('dev',"${env.DEV_HOST_PORT}","${env.CONT_PORT}").call()
                 }
 
             }
@@ -123,7 +124,7 @@ def call (Map pipelineParams) {
             }
             steps {
                 script {
-                    dockerDeploy('test','2399','8761')
+                    dockerDeploy('test',"${env.TEST_HOST_PORT}","${env.CONT_PORT}")
                 }
             }
         }
@@ -147,7 +148,7 @@ def call (Map pipelineParams) {
             steps {
                 script {
                     imageValidation().call()
-                    dockerDeploy('stage','3399','8761')
+                    dockerDeploy('stage',"${env.STAGE_HOST_PORT}","${env.CONT_PORT}")
                 }
             }
         }
@@ -169,7 +170,7 @@ def call (Map pipelineParams) {
             }
             steps {
                 script {
-                    dockerDeploy('prod','4399','8761')
+                    dockerDeploy('prod',"${env.PROD_HOST_PORT}","${env.CONT_PORT}")
                 }
             }
         }
