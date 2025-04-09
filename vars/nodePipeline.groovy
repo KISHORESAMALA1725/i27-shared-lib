@@ -55,7 +55,7 @@ pipeline {
             steps {
                 script {
                     echo "Running tests..."
-                    runTests("${env.APPLICATION_NAME}")  // Method to run the tests
+                    runTests()  // Method to run the tests
                 }
             }
         }
