@@ -170,32 +170,32 @@ pipeline {
     }
 }
 
-def installDependencies() {
-    echo "Installing dependencies using npm..."
-    sh 'npm install'  // Install Node.js dependencies
-}
+    def installDependencies() {
+        echo "Installing dependencies using npm..."
+        sh 'npm install'  // Install Node.js dependencies
+    }
 
-def runTests() {
-    echo "Running tests using npm..."
-    sh 'npm test'  // Run tests (ensure you have a test script in package.json)
-}
+    def runTests() {
+        echo "Running tests using npm..."
+        sh 'npm test'  // Run tests (ensure you have a test script in package.json)
+    }
 
-def runSonarQubeAnalysis() {
-    echo "Running SonarQube analysis..."
-    sh 'npm run sonar'  // Ensure you have a sonar script defined in your package.json
-}
+    def runSonarQubeAnalysis() {
+        echo "Running SonarQube analysis..."
+        sh 'npm run sonar'  // Ensure you have a sonar script defined in your package.json
+    }
 
-def dockerBuildAndPush() {
-    echo "Building Docker image..."
-    sh 'docker build -t ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT} .'  // Build Docker image
-    echo "Logging into Docker Hub..."
-    sh 'docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}'  // Login to Docker Hub
-    echo "Pushing Docker image to Docker Hub..."
-    sh 'docker push ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}'  // Push Docker image to Docker Hub
-}
+    def dockerBuildAndPush() {
+        echo "Building Docker image..."
+        sh 'docker build -t ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT} .'  // Build Docker image
+        echo "Logging into Docker Hub..."
+        sh 'docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}'  // Login to Docker Hub
+        echo "Pushing Docker image to Docker Hub..."
+        sh 'docker push ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}'  // Push Docker image to Docker Hub
+    }
 
-def deployToEnv(env, hostPort) {
-    echo "Deploying ${APPLICATION_NAME} to ${env} environment..."
-    sh "docker run -d -p ${hostPort}:${CONT_PORT} --name ${APPLICATION_NAME}-${env} ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}"  // Deploy to environment
-}
+    def deployToEnv(env, hostPort) {
+        echo "Deploying ${APPLICATION_NAME} to ${env} environment..."
+        sh "docker run -d -p ${hostPort}:${CONT_PORT} --name ${APPLICATION_NAME}-${env} ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}"  // Deploy to environment
+    }
 }
