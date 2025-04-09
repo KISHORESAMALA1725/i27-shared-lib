@@ -1,7 +1,34 @@
 import com.i27academy.builds.Docker;
 
-def call (Map pipelineParams) {
-    Node docker = new Node(this)
+// Move method definitions outside the pipeline block
+def installDependencies() {
+    echo "Installing dependencies using npm..."
+    sh 'npm install'  // Install Node.js dependencies
+}
+
+def runTests() {
+    echo "Running tests using npm..."
+    sh 'npm test'  // Run tests (ensure you have a test script in package.json)
+}
+
+def runSonarQubeAnalysis() {
+    echo "Running SonarQube analysis..."
+    sh 'npm run sonar'  // Ensure you have a sonar script defined in your package.json
+}
+
+def dockerBuildAndPush() {
+    echo "Building Docker image..."
+    sh 'docker build -t ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT} .'  // Build Docker image
+    echo "Logging into Docker Hub..."
+    sh 'docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}'  // Login to Docker Hub
+    echo "Pushing Docker image to Docker Hub..."
+    sh 'docker push ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}'  // Push Docker image to Docker Hub
+}
+
+def deployToEnv(env, hostPort) {
+    echo "Deploying ${APPLICATION_NAME} to ${env} environment..."
+    sh "docker run -d -p ${hostPort}:${CONT_PORT} --name ${APPLICATION_NAME}-${env} ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}"  // Deploy to environment
+}
 
 pipeline {
     agent {
@@ -19,7 +46,6 @@ pipeline {
     }
 
     tools {
-        // Define Node.js version (ensure NodeJS plugin is installed on Jenkins)
         nodejs 'NodeJS-14'  // Ensure NodeJS-14 is configured in Jenkins tools
     }
 
@@ -48,7 +74,7 @@ pipeline {
             steps {
                 script {
                     echo "Installing Node.js dependencies..."
-                    installDependencies()  // Method to install npm dependencies
+                    installDependencies()  // Call the method to install dependencies
                 }
             }
         }
@@ -60,7 +86,7 @@ pipeline {
             steps {
                 script {
                     echo "Running tests..."
-                    runTests()  // Method to run the tests
+                    runTests()  // Call the method to run tests
                 }
             }
         }
@@ -76,7 +102,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonarqube') {
                     echo "Running SonarQube scan..."
-                    runSonarQubeAnalysis()  // Method to perform SonarQube scan
+                    runSonarQubeAnalysis()  // Call the method to run SonarQube analysis
                 }
                 timeout(time: 2, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
@@ -91,7 +117,7 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker image..."
-                    dockerBuildAndPush()  // Method to build and push Docker image
+                    dockerBuildAndPush()  // Call the method to build and push Docker image
                 }
             }
         }
@@ -103,7 +129,7 @@ pipeline {
             steps {
                 script {
                     echo "Deploying to Dev environment..."
-                    deployToEnv('dev', DEV_HOST_PORT)  // Method to deploy to dev
+                    deployToEnv('dev', DEV_HOST_PORT)  // Call the method to deploy to dev
                 }
             }
         }
@@ -115,7 +141,7 @@ pipeline {
             steps {
                 script {
                     echo "Deploying to Test environment..."
-                    deployToEnv('test', TEST_HOST_PORT)  // Method to deploy to test
+                    deployToEnv('test', TEST_HOST_PORT)  // Call the method to deploy to test
                 }
             }
         }
@@ -133,7 +159,7 @@ pipeline {
             steps {
                 script {
                     echo "Deploying to Stage environment..."
-                    deployToEnv('stage', STAGE_HOST_PORT)  // Method to deploy to stage
+                    deployToEnv('stage', STAGE_HOST_PORT)  // Call the method to deploy to stage
                 }
             }
         }
@@ -151,7 +177,7 @@ pipeline {
             steps {
                 script {
                     echo "Deploying to Prod environment..."
-                    deployToEnv('prod', PROD_HOST_PORT)  // Method to deploy to prod
+                    deployToEnv('prod', PROD_HOST_PORT)  // Call the method to deploy to prod
                 }
             }
         }
@@ -167,35 +193,5 @@ pipeline {
         failure {
             echo 'Build failed.'
         }
-    }
-}
-
-    def installDependencies() {
-        echo "Installing dependencies using npm..."
-        sh 'npm install'  // Install Node.js dependencies
-    }
-
-    def runTests() {
-        echo "Running tests using npm..."
-        sh 'npm test'  // Run tests (ensure you have a test script in package.json)
-    }
-
-    def runSonarQubeAnalysis() {
-        echo "Running SonarQube analysis..."
-        sh 'npm run sonar'  // Ensure you have a sonar script defined in your package.json
-    }
-
-    def dockerBuildAndPush() {
-        echo "Building Docker image..."
-        sh 'docker build -t ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT} .'  // Build Docker image
-        echo "Logging into Docker Hub..."
-        sh 'docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}'  // Login to Docker Hub
-        echo "Pushing Docker image to Docker Hub..."
-        sh 'docker push ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}'  // Push Docker image to Docker Hub
-    }
-
-    def deployToEnv(env, hostPort) {
-        echo "Deploying ${APPLICATION_NAME} to ${env} environment..."
-        sh "docker run -d -p ${hostPort}:${CONT_PORT} --name ${APPLICATION_NAME}-${env} ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}"  // Deploy to environment
     }
 }
