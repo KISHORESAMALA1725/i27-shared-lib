@@ -6,7 +6,7 @@ class Node {
         this.jenkins = jenkins
     }
 
-    def buildApp(appName) {
+    def runTests(appName) {
         jenkins.sh """
             echo "Installing Node.js dependencies..."
             sh 'npm install'  // Install dependencies using npm

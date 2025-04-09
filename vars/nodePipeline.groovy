@@ -1,8 +1,4 @@
-import com.i27academy.builds.Node;
-
-def call (Map pipelineParams) {
-    Docker docker = new Docker(this)
-    pipeline {
+pipeline {
     agent {
         label 'k8s-slave'
     }
@@ -47,7 +43,7 @@ def call (Map pipelineParams) {
             steps {
                 script {
                     echo "Installing Node.js dependencies..."
-                    sh 'npm install'  // Install dependencies using npm
+                    installDependencies()  // Method to install npm dependencies
                 }
             }
         }
@@ -59,7 +55,7 @@ def call (Map pipelineParams) {
             steps {
                 script {
                     echo "Running tests..."
-                    sh 'npm test'  // Run the tests (ensure you have test scripts set in package.json)
+                    runTests("${env.APPLICATION_NAME}")  // Method to run the tests
                 }
             }
         }
@@ -75,7 +71,7 @@ def call (Map pipelineParams) {
             steps {
                 withSonarQubeEnv('sonarqube') {
                     echo "Running SonarQube scan..."
-                    sh 'npm run sonar'  // Ensure you have a sonar script in package.json
+                    runSonarQubeAnalysis()  // Method to perform SonarQube scan
                 }
                 timeout(time: 2, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
@@ -90,11 +86,7 @@ def call (Map pipelineParams) {
             steps {
                 script {
                     echo "Building Docker image..."
-                    sh 'docker build -t ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT} .'  // Build the Docker image
-                    echo "Logging into Docker Hub..."
-                    sh 'docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}'  // Login to Docker Hub
-                    echo "Pushing Docker image to Docker Hub..."
-                    sh 'docker push ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}'  // Push image to Docker Hub
+                    dockerBuildAndPush()  // Method to build and push Docker image
                 }
             }
         }
@@ -106,7 +98,7 @@ def call (Map pipelineParams) {
             steps {
                 script {
                     echo "Deploying to Dev environment..."
-                    sh "docker run -d -p ${DEV_HOST_PORT}:${CONT_PORT} --name ${APPLICATION_NAME}-dev ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}"
+                    deployToEnv('dev', DEV_HOST_PORT)  // Method to deploy to dev
                 }
             }
         }
@@ -118,7 +110,7 @@ def call (Map pipelineParams) {
             steps {
                 script {
                     echo "Deploying to Test environment..."
-                    sh "docker run -d -p ${TEST_HOST_PORT}:${CONT_PORT} --name ${APPLICATION_NAME}-test ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}"
+                    deployToEnv('test', TEST_HOST_PORT)  // Method to deploy to test
                 }
             }
         }
@@ -136,7 +128,7 @@ def call (Map pipelineParams) {
             steps {
                 script {
                     echo "Deploying to Stage environment..."
-                    sh "docker run -d -p ${STAGE_HOST_PORT}:${CONT_PORT} --name ${APPLICATION_NAME}-stage ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}"
+                    deployToEnv('stage', STAGE_HOST_PORT)  // Method to deploy to stage
                 }
             }
         }
@@ -154,7 +146,7 @@ def call (Map pipelineParams) {
             steps {
                 script {
                     echo "Deploying to Prod environment..."
-                    sh "docker run -d -p ${PROD_HOST_PORT}:${CONT_PORT} --name ${APPLICATION_NAME}-prod ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}"
+                    deployToEnv('prod', PROD_HOST_PORT)  // Method to deploy to prod
                 }
             }
         }
@@ -162,17 +154,42 @@ def call (Map pipelineParams) {
 
     post {
         always {
-            // Actions to perform after all stages (cleanup, notifications, etc.)
             echo 'Pipeline completed!'
         }
         success {
-            // Actions to perform if the build is successful
             echo 'Build succeeded!'
         }
         failure {
-            // Actions to perform if the build fails
             echo 'Build failed.'
         }
     }
 }
+
+def installDependencies() {
+    echo "Installing dependencies using npm..."
+    sh 'npm install'  // Install Node.js dependencies
+}
+
+def runTests() {
+    echo "Running tests using npm..."
+    sh 'npm test'  // Run tests (ensure you have a test script in package.json)
+}
+
+def runSonarQubeAnalysis() {
+    echo "Running SonarQube analysis..."
+    sh 'npm run sonar'  // Ensure you have a sonar script defined in your package.json
+}
+
+def dockerBuildAndPush() {
+    echo "Building Docker image..."
+    sh 'docker build -t ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT} .'  // Build Docker image
+    echo "Logging into Docker Hub..."
+    sh 'docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}'  // Login to Docker Hub
+    echo "Pushing Docker image to Docker Hub..."
+    sh 'docker push ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}'  // Push Docker image to Docker Hub
+}
+
+def deployToEnv(env, hostPort) {
+    echo "Deploying ${APPLICATION_NAME} to ${env} environment..."
+    sh "docker run -d -p ${hostPort}:${CONT_PORT} --name ${APPLICATION_NAME}-${env} ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}"  // Deploy to environment
 }
