@@ -1,4 +1,4 @@
-import com.i27academy.builds.Docker;
+import com.i27academy.builds.Node;
 
 // Move method definitions outside the pipeline block
 def installDependencies() {
