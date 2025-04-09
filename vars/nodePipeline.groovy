@@ -1,7 +1,7 @@
 import com.i27academy.builds.Docker;
 
 def call (Map pipelineParams) {
-    Docker docker = new Docker(this)
+    Node docker = new Node(this)
 
 pipeline {
     agent {
