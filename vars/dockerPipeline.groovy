@@ -17,16 +17,21 @@ def call (Map pipelineParams) {
     }
 
     tools {
-        maven 'Maven-3.8.8'
+        maven 'maven-3.8.8'
         jdk 'JDK-17'
     }
     
     environment {
-        APPLICATION_NAME="${pipelineParams.appName}"
-        POM_VERSION = readMavenPom().getVersion()
+        APPLICATION_NAME = "${pipelineParams.appName}"
+        DEV_HOST_PORT = "${pipelineParams.devHostPort}"
+        TST_HOST_PORT = "${pipelineParams.tstHostPort}"
+        STG_HOST_PORT = "${pipelineParams.stgHostPort}"
+        PROD_HOST_PORT = "${pipelineParams.prodHostPort}"
+        CONT_PORT = "${pipelineParams.contPort}"
+        POM_VERSION = readMavenPom().getVersion() 
         POM_PACKAGING = readMavenPom().getPackaging()
-        DOCKER_HUB = "docker.io/kishoresamala84"
-        DOCKER_CREDS = credentials("kishoresamala_docker_creds")
+         DOCKER_HUB = "docker.io/kishoresamala84"
+         DOCKER_CREDS = credentials('kishoresamala_docker_creds')
     }
 
     stages {
@@ -60,8 +65,8 @@ def call (Map pipelineParams) {
                     sh """
                          mvn sonar:sonar \
                             -Dsonar.projectKey=i27-eureka \
-                            -Dsonar.host.url=http://34.48.14.175:9000 \
-                            -Dsonar.login=sqa_e27457e7a7bce38fdd73f05e767b4368d7355ee3
+                            -Dsonar.host.url=http://35.188.56.142:9000 \
+                            -Dsonar.login=sqa_c43321cccb7b6b904bafbf437b5a9e2ebf63af19
                     """
                 }
                 timeout(time: 2, unit: 'MINUTES') {
@@ -104,8 +109,9 @@ def call (Map pipelineParams) {
                 }
             }
             steps {
-                script{
-                    dockerDeploy('dev','1399','8761').call()
+                script {
+                    imageValidation().call()
+                    dockerDeploy('dev', "${env.DEV_HOST_PORT}", "${env.CONT_PORT}").call()
                 }
 
             }
@@ -119,7 +125,8 @@ def call (Map pipelineParams) {
             }
             steps {
                 script {
-                    dockerDeploy('test','2399','8761')
+                    imageValidation().call()
+                    dockerDeploy('tst', "${env.TST_HOST_PORT}", "${env.CONT_PORT}").call()
                 }
             }
         }
@@ -143,7 +150,7 @@ def call (Map pipelineParams) {
             steps {
                 script {
                     imageValidation().call()
-                    dockerDeploy('stage','3399','8761')
+                    dockerDeploy('stg', "${env.STG_HOST_PORT}", "${env.CONT_PORT}").call()
                 }
             }
         }
@@ -164,8 +171,11 @@ def call (Map pipelineParams) {
                 }
             }
             steps {
-                script {
-                    dockerDeploy('prod','4399','8761')
+                timeout(time: 300, unit: 'SECONDS') {
+                    input message: "Deploying to ${env.APPLICATION_NAME} to Production" , ok: 'yes', submitter: 'sivasre,i27academy'
+                }
+                    script {
+                    dockerDeploy('prd', "${env.PROD_HOST_PORT}", "${env.contPort}").call()
                 }
             }
         }
