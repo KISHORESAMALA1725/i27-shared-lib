@@ -1,3 +1,8 @@
+import com.i27academy.builds.Docker;
+
+def call (Map pipelineParams) {
+    Docker docker = new Docker(this)
+
 pipeline {
     agent {
         label 'k8s-slave'
@@ -192,4 +197,5 @@ def dockerBuildAndPush() {
 def deployToEnv(env, hostPort) {
     echo "Deploying ${APPLICATION_NAME} to ${env} environment..."
     sh "docker run -d -p ${hostPort}:${CONT_PORT} --name ${APPLICATION_NAME}-${env} ${DOCKER_HUB}/${APPLICATION_NAME}:${GIT_COMMIT}"  // Deploy to environment
+}
 }
