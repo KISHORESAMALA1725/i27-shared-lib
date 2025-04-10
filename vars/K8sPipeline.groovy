@@ -1,7 +1,6 @@
 import com.i27academy.builds.Docker;
-<<<<<<< HEAD
 import com.i27academy.k8s.K8s;
-=======
+
 import com.i27academy.K8s.K8s;
 >>>>>>> 167dffba71e75a553ad9daf3b1860cba34905c3f
 
