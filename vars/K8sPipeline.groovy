@@ -1,5 +1,5 @@
 import com.i27academy.builds.Docker;
-import com.i27academy.builds.K8s;
+import com.i27academy.k8s.K8s;
 
 def call (Map pipelineParams) {
     K8s docker = new K8s(this)
@@ -114,7 +114,7 @@ def call (Map pipelineParams) {
             }
             steps {
                 script {
-                    K8s.auth_login("${env.DEV_CLUSTER_NAME}","${env.DEV_CLUSTER_ZONE}","${env.DEV_PROJECT_ID}")
+                    k8s.auth_login("${env.DEV_CLUSTER_NAME}","${env.DEV_CLUSTER_ZONE}","${env.DEV_PROJECT_ID}")
                     imageValidation().call()
                     // dockerDeploy('dev', "${env.DEV_HOST_PORT}", "${env.CONT_PORT}").call()
                 }
