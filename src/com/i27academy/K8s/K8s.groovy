@@ -13,7 +13,7 @@ class K8s {
         echo " ***** creating k8s authentication login menthod ***** " 
         gcloud compute instance list
         echo " ***** create config file for environment ***** "
-        gcloud container clusters get-credentials $clustername--zone $zone --project $projectID
+        gcloud container clusters get-credentials $clusterName--zone $zone --project $projectID
         kubectl get nodes
         """
     }
