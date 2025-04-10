@@ -34,7 +34,7 @@ def call (Map pipelineParams) {
         DOCKER_HUB = "docker.io/kishoresamala84"
         DOCKER_CREDS = credentials('kishoresamala84_docker_creds')
         DEV_CLUSTER_NAME = "i27-cluster"
-        DEV_CLUSTER_ZONE = "us-central1-a"
+        DEV_CLUSTER_ZONE = "us-central1-c"
         DEV_PROJECT_ID = "saharssh-447514"
     }
 
