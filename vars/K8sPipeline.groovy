@@ -1,5 +1,5 @@
 import com.i27academy.builds.Docker;
-import com.i27academy.K8s.K8s
+import com.i27academy.K8s.K8s;
 
 def call (Map pipelineParams) {
     k8s docker = new k8s(this)
