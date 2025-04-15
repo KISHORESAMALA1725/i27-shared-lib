@@ -35,7 +35,11 @@ def call (Map pipelineParams) {
         DOCKER_CREDS = credentials('kishoresamala84_docker_creds')
         DEV_CLUSTER_NAME = "i27-cluster"
         DEV_CLUSTER_ZONE = "us-central1-c"
+<<<<<<< HEAD
         DEV_PROJECT_ID = "saharssh-456212"
+=======
+        DEV_PROJECT_ID = "saharssh-447514"
+>>>>>>> be3045ef9184fd6ec7adda0c34d7015a93ee2538
     }
 
     stages {
