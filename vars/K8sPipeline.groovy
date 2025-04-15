@@ -34,8 +34,8 @@ def call (Map pipelineParams) {
         DOCKER_HUB = "docker.io/kishoresamala84"
         DOCKER_CREDS = credentials('kishoresamala84_docker_creds')
         DEV_CLUSTER_NAME = "i27-cluster"
-        DEV_CLUSTER_ZONE = "us-central1-a"
-        DEV_PROJECT_ID = "saharssh-447514"
+        DEV_CLUSTER_ZONE = "us-central1-c"
+        DEV_PROJECT_ID = "saharssh-456212"
     }
 
     stages {
@@ -66,12 +66,12 @@ def call (Map pipelineParams) {
             steps {
                 echo "***** sonar stage implementing *****"                
                 withSonarQubeEnv('sonarqube') {
-                    sh """
-                         mvn sonar:sonar \
-                            -Dsonar.projectKey=i27-eureka \
-                            -Dsonar.host.url=http://35.188.56.142:9000 \
-                            -Dsonar.login=sqa_c43321cccb7b6b904bafbf437b5a9e2ebf63af19
-                    """
+                        sh """
+                            mvn clean verify sonar:sonar \
+                            -Dsonar.projectKey=i27-eureka-05 \
+                            -Dsonar.host.url=http://34.85.201.20:9000/ \
+                            -Dsonar.login=sqa_3ed9d5a5f6a874816c2f1c19b9c7674747b81b21
+                        """
                 }
                 timeout(time: 2, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
