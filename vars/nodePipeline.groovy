@@ -204,13 +204,13 @@ def call (Map pipelineParams) {
 
 
 
-def buildApp() {
-    return {
-            echo "*****Building the Application *****"
-            sh "mvn clean package -DskipTest=true"
-            archiveArtifacts 'target/*.jar'        
-    }
-}
+// def buildApp() {
+//     return {
+//             echo "*****Building the Application *****"
+//             sh "mvn clean package -DskipTest=true"
+//             archiveArtifacts 'target/*.jar'        
+//     }
+// }
 
 def imageValidation() {
     return {
@@ -221,7 +221,7 @@ def imageValidation() {
         }
         catch (Exception e){
             echo "OOOPPSSS!!! Docker Image with this tag is not found, so image is building now"
-            buildApp().call()
+            // buildApp().call()
             dockerBuildAndPush().call()
         }
 
