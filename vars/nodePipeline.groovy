@@ -28,9 +28,9 @@ def call (Map pipelineParams) {
         // TST_HOST_PORT = "${pipelineParams.tstHostPort}"
         // STG_HOST_PORT = "${pipelineParams.stgHostPort}"
         // PROD_HOST_PORT = "${pipelineParams.prodHostPort}"
-        CONT_PORT = "${pipelineParams.contPort}"
-        POM_VERSION = readMavenPom().getVersion() 
-        POM_PACKAGING = readMavenPom().getPackaging()
+        // CONT_PORT = "${pipelineParams.contPort}"
+        // POM_VERSION = readMavenPom().getVersion() 
+        // POM_PACKAGING = readMavenPom().getPackaging()
         DOCKER_HUB = "docker.io/kishoresamala84"
         DOCKER_CREDS = credentials('kishoresamala84_docker_creds')
 
@@ -90,18 +90,18 @@ def call (Map pipelineParams) {
         //     }
         // }
 
-        // stage ('BUILD-FORMAT') {
-        //     steps {
-        //         script {
-        //             // Existing : i27-eureka-0.0.1-SNAPSHOT.jar
-        //             // Destination: i27-eureka-buildnumber-branchname.packagin
-        //             sh """
-        //             echo "Testing source jar-source: i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"
-        //             echo "Tesing destination Jar: i27-${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING}"
-        //             """ 
-        //         }
-        //     }
-        // }
+        stage ('BUILD-FORMAT') {
+            steps {
+                script {
+                    // Existing : i27-eureka-0.0.1-SNAPSHOT.jar
+                    // Destination: i27-eureka-buildnumber-branchname.packagin
+                    sh """
+                    echo "Testing source jar-source: i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"
+                    echo "Tesing destination Jar: i27-${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING}"
+                    """ 
+                }
+            }
+        }
 
         stage (' ***** Docker-Build-Push ***** ') {
             when {
