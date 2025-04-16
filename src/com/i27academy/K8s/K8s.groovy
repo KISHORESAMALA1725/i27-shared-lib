@@ -22,7 +22,7 @@ class K8s {
         jenkins.sh """
             echo " ***** entering into K8S deployment method **** "
             sed -i "s|DIT|${docker_image}|g" ./.cicd/${fileName}
-            kubectl apply -f ./cicd/${fileName} -n $namespace
+            kubectl apply -f ./.cicd/${fileName} -n $namespace
         """
     }
 }
