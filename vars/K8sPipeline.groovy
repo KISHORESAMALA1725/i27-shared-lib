@@ -125,7 +125,7 @@ def call (Map pipelineParams) {
             }
             steps {
                 script {
-                    def docker_image = "${DOCKER_HUB}/${env.APPLICATION_NAME}/${GIT_COMMIT}"
+                    def docker_image = "${DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
                     K8s.auth_login("${env.DEV_CLUSTER_NAME}","${env.DEV_CLUSTER_ZONE}","${env.DEV_PROJECT_ID}")
                     imageValidation().call()
                     K8s.K8sdeploy("${env.K8S_DEV_FILE}", docker_image, "${env.DEV_NAMESPACE}")
