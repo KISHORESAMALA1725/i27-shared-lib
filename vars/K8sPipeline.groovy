@@ -33,9 +33,20 @@ def call (Map pipelineParams) {
         POM_PACKAGING = readMavenPom().getPackaging()
         DOCKER_HUB = "docker.io/kishoresamala84"
         DOCKER_CREDS = credentials('kishoresamala84_docker_creds')
+
         DEV_CLUSTER_NAME = "i27-cluster"
         DEV_CLUSTER_ZONE = "us-central1-c"
         DEV_PROJECT_ID = "saharssh-456212"
+
+        K8S_DEV_FILE = "k8s_dev.yaml"
+        K8S_TEST_FILE = "k8s_test.yaml"
+        K8S_STAGE_FILE = "k8s_stage.yaml"
+        K8S_PROD_FILE = "k8s_prod.yaml"
+
+        DEV_NAMESPACE = "cart-dev-ns"
+        TEST_NAMESPACE = "cart-test-ns"
+        STAGE_NAMESPACE = "cart-stage-ns"
+        PROD_NAMESPACE = "prod-stage-ns"
     }
 
     stages {
@@ -114,8 +125,10 @@ def call (Map pipelineParams) {
             }
             steps {
                 script {
+                    def docker_image = "${DOCKER_HUB}/${env.APPLICATION_NAME}/${GIT_COMMIT}"
                     K8s.auth_login("${env.DEV_CLUSTER_NAME}","${env.DEV_CLUSTER_ZONE}","${env.DEV_PROJECT_ID}")
                     imageValidation().call()
+                    K8s.K8sdeploy("$env.K8S_DEV_FILE", docker_image, "${env.}")
                     // dockerDeploy('dev', "${env.DEV_HOST_PORT}", "${env.CONT_PORT}").call()
                 }
 
