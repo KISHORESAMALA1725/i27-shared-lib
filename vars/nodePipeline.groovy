@@ -232,7 +232,7 @@ def dockerBuildAndPush() {
     return {
         echo "****** Building Doker image *******"                    
         // sh "cp ${WORKSPACE}/target/i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING} ./.cicd"
-        sh "docker build -t ${DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT} ./.cicd "
+        sh "docker build -t ${DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"
         sh "docker login -u ${DOCKER_CREDS_USR} -p ${DOCKER_CREDS_PSW}"
         echo "****** Building Doker image *******" 
         sh "docker push ${DOCKER_HUB}/${env.APPLICATION_NAME}:${GIT_COMMIT}"                    
