@@ -128,7 +128,7 @@ def call (Map pipelineParams) {
                     def docker_image = "${DOCKER_HUB}/${env.APPLICATION_NAME}/${GIT_COMMIT}"
                     K8s.auth_login("${env.DEV_CLUSTER_NAME}","${env.DEV_CLUSTER_ZONE}","${env.DEV_PROJECT_ID}")
                     imageValidation().call()
-                    K8s.K8sdeploy("$env.K8S_DEV_FILE", docker_image, "${env.DEV_NAMESPACE}")
+                    K8s.K8sdeploy("${env.K8S_DEV_FILE}", docker_image, "${env.DEV_NAMESPACE}")
                     // dockerDeploy('dev', "${env.DEV_HOST_PORT}", "${env.CONT_PORT}").call()
                 }
 
