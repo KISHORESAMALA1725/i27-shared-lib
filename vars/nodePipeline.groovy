@@ -90,18 +90,18 @@ def call (Map pipelineParams) {
         //     }
         // }
 
-        stage ('BUILD-FORMAT') {
-            steps {
-                script {
-                    // Existing : i27-eureka-0.0.1-SNAPSHOT.jar
-                    // Destination: i27-eureka-buildnumber-branchname.packagin
-                    sh """
-                    echo "Testing source jar-source: i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"
-                    echo "Tesing destination Jar: i27-${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING}"
-                    """ 
-                }
-            }
-        }
+        // stage ('BUILD-FORMAT') {
+        //     steps {
+        //         script {
+        //             // Existing : i27-eureka-0.0.1-SNAPSHOT.jar
+        //             // Destination: i27-eureka-buildnumber-branchname.packagin
+        //             sh """
+        //             echo "Testing source jar-source: i27-${env.APPLICATION_NAME}-${env.POM_VERSION}.${env.POM_PACKAGING}"
+        //             echo "Tesing destination Jar: i27-${env.APPLICATION_NAME}-${currentBuild.number}-${BRANCH_NAME}.${env.POM_PACKAGING}"
+        //             """ 
+        //         }
+        //     }
+        // }
 
         stage (' ***** Docker-Build-Push ***** ') {
             when {
